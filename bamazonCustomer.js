@@ -39,7 +39,7 @@ function selectProduct() {
                     , [soldProduct.name], function (err, product) {
                         if (err) throw err;
                         if (product[0].stock_quantity >= soldProduct.quantity)
-                            updateQuantity(product[0], soldProduct);
+                            updateProduct(product[0], soldProduct);
                         else console.log(`Insufficient quantity!`);
                         connection.end();
                     });
@@ -47,11 +47,17 @@ function selectProduct() {
     });
 }
 
-function updateQuantity(product, soldProduct) {
-    connection.query(`UPDATE products SET stock_quantity = ? WHERE product_name = ?`
-        , [product.stock_quantity - soldProduct.quantity, product.name]
+function updateProduct(product, soldProduct) {
+    let sale = soldProduct.quantity * product.price;
+    let newQuantity = product.stock_quantity - soldProduct.quantity
+    connection.query(`UPDATE products SET ? WHERE product_name = ?`
+        , [{
+            stock_quantity: newQuantity,
+            product_sales: product.product_sales + sale,
+        },
+        product.product_name]
         , function (err) {
             if (err) throw err;
-            console.log(soldProduct.quantity * product.price)
+            console.log(sale);
         });
 }

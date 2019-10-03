@@ -9,6 +9,15 @@ CREATE TABLE products (
   stock_quantity INT NULL,
   PRIMARY KEY (item_id)
 );
+
+USE bamazon;
+ALTER TABLE products
+ADD product_sales DECIMAL(10, 2);
+
+USE bamazon;
+ALTER TABLE Persons
+ALTER product_sales SET DEFAULT '0';
+
 INSERT INTO
   products (
     product_name,
