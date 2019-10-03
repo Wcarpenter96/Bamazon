@@ -8,51 +8,37 @@ var connection = mysql.createConnection({
     password: "password",
     database: "bamazon"
 });
+
 connection.connect(function (err) {
     if (err) throw err;
-    selectProduct();
+    menu();
 });
 
-function selectProduct() {
-    connection.query(`SELECT * FROM products`, function (err, products) {
-        if (err) throw err;
-        let productsArr = [];
-        for (let i = 0; i < products.length; i++) {
-            productsArr.push(products[i].product_name);
-        }
-        console.log(productsArr);
-        inquirer
-            .prompt([
-                {
-                    name: "product",
-                    type: "list",
-                    message: "What product would you like to buy?",
-                    choices: productsArr
-                },
-                {
-                    name: "quantity",
-                    type: "number",
-                    message: "How many units would you like to buy?",
-                }
-            ])
-            .then(function (bought) {
-                connection.query(`SELECT * FROM products WHERE product_name = ?`
-                    , [bought.product], function (err, item) {
-                        if (err) throw err;
-                        if (item[0].stock_quantity >= bought.quantity)
-                            updateQuantity(item[0], bought);
-                        else console.log(`Insufficient quantity!`);
-                        connection.end();
-                    });
-            });
-    });
-}
-
-function updateQuantity(product, bought) {
-    connection.query(`UPDATE products SET stock_quantity = ? WHERE product_name = ?`
-        , [product.stock_quantity - bought.quantity, bought.product]
-        , function (err) {
-            if (err) throw err;
-            console.log(bought.quantity * product.price)
+function menu() {
+    inquirer
+        .prompt([
+            {
+                name: "choice",
+                type: "list",
+                message: "Welcome Manager! What would you like to do?",
+                choices: ['View Products for Sale', 'View Low Inventory',
+                    'Add to Inventory', 'Add New Product']
+            },
+        ])
+        .then(function (menu) {
+            switch (menu.choice) {
+                case 'View Products for Sale':
+                    viewProducts();
+                    break;
+                case 'View Low Inventory':
+                    lowInventory();
+                    break;
+                case 'Add to Inventory':
+                    addInventory();
+                    break;
+                case 'Add New Product':
+                    addProduct();
+                    break;
+            }
         });
 }
