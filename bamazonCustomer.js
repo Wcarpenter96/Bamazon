@@ -60,6 +60,6 @@ function updateProduct(product, soldProduct) {
         product.product_name]
         , function (err) {
             if (err) throw err;
-            console.log(sale);
+            console.log(`Total: ${sale}. Thanks for shopping!`);
         });
 }

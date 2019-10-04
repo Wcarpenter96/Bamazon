@@ -92,6 +92,7 @@ function newDepartment() {
                 function (err, res) {
                     if (err) throw err;
                     console.log(`New ${dep.name} department created with an overhead cost of ${dep.cost}`)
+                    connection.end();
                 });
         });
 };
