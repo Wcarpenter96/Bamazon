@@ -109,89 +109,42 @@ function updateStockQuantity(addProduct, product) {
 }
 
 function addProduct() {
-    inquirer
-        .prompt([
-            {
-                name: "name",
-                message: "What is the name of the product you would like to list?",
-            }, {
-                name: "department",
-                type: "list",
-                message: "What department should the product belong to?",
-                choices: departments
-            }, {
-                name: "price",
-                type: "number",
-                message: "What is the listed price of the item?",
-            }, {
-                name: "quantity",
-                type: "number",
-                message: "How many units of this product would you like to list?",
-            },
-        ])
-        .then(function (product) {
-            connection.query(`INSERT INTO products SET ?`,
+    connection.query("SELECT * FROM departments", function (err, dep) {
+        departments = [];
+        for (let i = 0; i < dep.length; i++) departments.push(dep[i].department_name);
+        inquirer
+            .prompt([
                 {
-                    product_name: product.name,
-                    department_name: product.department,
-                    price: product.price,
-                    stock_quantity: product.quantity
+                    name: "name",
+                    message: "What is the name of the product you would like to list?",
+                }, {
+                    name: "department",
+                    type: "list",
+                    message: "What department should the product belong to?",
+                    choices: departments
+                }, {
+                    name: "price",
+                    type: "number",
+                    message: "What is the listed price of the item?",
+                }, {
+                    name: "quantity",
+                    type: "number",
+                    message: "How many units of this product would you like to list?",
                 },
-                function (err, res) {
-                    if (err) throw err;
-                    console.log('Product listed!');
-                    connection.end();
-                });
-        });
+            ])
+            .then(function (product) {
+                connection.query(`INSERT INTO products SET ?`,
+                    {
+                        product_name: product.name,
+                        department_name: product.department,
+                        price: product.price,
+                        stock_quantity: product.quantity
+                    },
+                    function (err, res) {
+                        if (err) throw err;
+                        console.log('Product listed!');
+                        connection.end();
+                    });
+            });
+    });
 }
-
-let departments = [`Amazon Devices`,
-    `Arts, Crafts & Sewing`,
-    `Automotive & Motorcycle`,
-    `Baby`,
-    `Baby Clothing & Accessories`,
-    `Beauty`,
-    `Books`,
-    `Boys’ Fashion`,
-    `Camera & Photo`,
-    `Cell Phones & Accessories`,
-    `Computers & Accessories`,
-    `Costumes & Accessories`,
-    `DVD & Blu-ray`,
-    `Electronics`,
-    `Fashion`,
-    `Furniture`,
-    `Girls’ Fashion`,
-    `Grocery`,
-    `Headphones`,
-    `Health & Personal Care`,
-    `Home`,
-    `Home Audio`,
-    `Home Improvement`,
-    `Industrial & Scientific`,
-    `Kindle`,
-    `Kindle eBooks`,
-    `Kitchen`,
-    `Luggage Travel Gear`,
-    `Magazines`,
-    `Major Appliances`,
-    `Men's Shoes`,
-    `Men's Watches`,
-    `Men’s Clothing`,
-    `Men’s Fashion`,
-    `Musical Instruments`,
-    `Office Electronics & Supplies`,
-    `Patio, Lawn & Garden`,
-    `PC & Video Games`,
-    `Pet Supplies`,
-    `Power & Hand Tools`,
-    `Software`,
-    `Sports & Outdoors`,
-    `Television & Video`,
-    `Toys & Games`,
-    `Women's Shoes`,
-    `Women's Watches`,
-    `Women’s Clothing`,
-    `Women’s Fashion`,
-    `Women’s Jewelry`,
-    `Everything Else`]
