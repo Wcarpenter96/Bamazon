@@ -56,9 +56,9 @@ node bamazonSupervisor.js
 
 The Supervisor can choose from four different commands:
 
- 1. *View Product Sales by Department *:
+ 1. *View Product Sales by Department*: displays each department's name, overhead cost, product sales, and total profit.
 
- 2. *Create New Department*
+ 2. *Create New Department*: prompts user to enter the name and overhead costs of a new department
 
 
 
